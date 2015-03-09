@@ -1,16 +1,17 @@
-function Bank() {
+function Bank(date, movements) {
     this.balance = 0;
-    this.movements = new MovementList();
+    this.date = date;
+    this.movements = movements;
 
-    this.makeDeposit = function(amount, date){
+    this.makeDeposit = function(amount){
         this.balance += amount;
-        movement = new Movement(date, amount, this.balance)
+        movement = new Movement(this.date.now(), amount, this.balance)
         this.movements.push(movement);
     }
 
-    this.withdrawalMoney = function (amount, date){
+    this.withdrawalMoney = function (amount){
         this.balance -= amount;
-        movement = new Movement(date, -(amount), this.balance)
+        movement = new Movement(this.date.now(), -(amount), this.balance)
         this.movements.push(movement);
     }
 }
