@@ -4,23 +4,32 @@ function Bank() {
 
     this.makeDeposit = function(amount, date){
         this.balance += amount;
-        this.movements.push([date, amount, this.balance]);
-        return [amount, date];
+        movement = new Movement(date, amount, this.balance)
+        this.movements.push(movement);
     }
 
     this.withdrawalMoney = function (amount, date){
         this.balance -= amount;
-        this.movements.push([date, -(amount), this.balance])
-        return [amount, date];
+        movement = new Movement(date, -(amount), this.balance)
+        this.movements.push(movement);
     }
 }
 
+function Movement(date, amount, balance){
+    this.date = date;
+    this.amount = amount;
+    this.balance = balance;
+
+    this.toArray = function(){
+        return [this.date, this.amount, this.balance];
+    }
+}
 
 function MovementList(){
     this.items = [];
 
-    this.push = function(item){
-        this.items.push(item);
+    this.push = function(movement){
+        this.items.push(movement);
     }
 
     this.lastMovement = function(){
@@ -29,13 +38,19 @@ function MovementList(){
 
     this.getDeposits = function(){
         return this.items.filter(function(movement){
-            return movement[1]>0;
+            return movement.amount>0;
         });
     }
 
     this.getWithdrawals = function(){
         return this.items.filter(function(movement){
-            return movement[1]<0;
+            return movement.amount<0;
+        });
+    }
+
+    this.toArray = function(){
+        return this.items.map(function(movement){
+            return movement.toArray();
         });
     }
 }

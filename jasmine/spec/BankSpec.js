@@ -1,48 +1,66 @@
 describe("Bank", function() {
   var bank;  
-  bank = new Bank();      
+  
+  beforeEach(function(){
+    bank = new Bank();
+    movement1 = jasmine.objectContaining({ date:'10-01-2012', amount:1000, balance: 1000});
+    movement2 = jasmine.objectContaining({ date:'13-01-2012', amount:2000, balance: 3000});
+    movement3 = jasmine.objectContaining({ date:'14-01-2012', amount:-500, balance: 2500});
+    allMovements = [movement1, movement2, movement3];
+    deposits = [movement1, movement2];
+    withdrawals = [movement3];
+  });
 
   describe('Client make a deposit', function() {
     it('Given a client makes a deposit of 1000 on 10-01-2012', function() {      
-      expect(bank.makeDeposit(1000,'10-01-2012')).toEqual([1000,'10-01-2012'])
+      bank.makeDeposit(1000,'10-01-2012');
       expect(bank.balance).toEqual(1000);
-      expect(bank.movements.lastMovement()).toEqual(['10-01-2012',1000,1000]);
+      expect(bank.movements.lastMovement()).toEqual(movement1);
     });
     it('And a deposit of 2000 on 13-01-2012', function() {
-      expect(bank.makeDeposit(2000, '13-01-2012')).toEqual([2000, '13-01-2012']);
+      bank.makeDeposit(1000,'10-01-2012');
+      bank.makeDeposit(2000, '13-01-2012');
       expect(bank.balance).toEqual(3000);
-      expect(bank.movements.lastMovement()).toEqual(['13-01-2012',2000,3000]);
+      expect(bank.movements.lastMovement()).toEqual(movement2);
     });
   });
 
   describe('Client Withdrawal Money', function() {
     it('And a withdrawal of 500 on 14-01-2012', function() {
-      expect(bank.withdrawalMoney(500,'14-01-2012')).toEqual([500,'14-01-2012']);  
+      bank.makeDeposit(1000,'10-01-2012');
+      bank.makeDeposit(2000, '13-01-2012');
+      bank.withdrawalMoney(500,'14-01-2012');  
       expect(bank.balance).toEqual(2500);
-      expect(bank.movements.lastMovement()).toEqual(['14-01-2012', -500, 2500]);
+      expect(bank.movements.lastMovement()).toEqual(movement3);
     });    
   });
 
   describe('Get Acount movements', function() {
     it('Get all bank account movements', function() {
-      expect(bank.movements.items).toEqual([['10-01-2012',1000,1000],
-                                          ['13-01-2012',2000,3000],
-                                          ['14-01-2012',-500,2500]]);
+      bank.makeDeposit(1000,'10-01-2012');
+      bank.makeDeposit(2000, '13-01-2012');
+      bank.withdrawalMoney(500,'14-01-2012'); 
+      expect(bank.movements.items).toEqual(allMovements);
     });
     it('Get account deposits', function() {
-      expect(bank.movements.getDeposits()).toEqual([['10-01-2012',1000,1000],
-                                          ['13-01-2012',2000,3000]]);
+      bank.makeDeposit(1000,'10-01-2012');
+      bank.makeDeposit(2000, '13-01-2012');
+      bank.withdrawalMoney(500,'14-01-2012'); 
+      expect(bank.movements.getDeposits()).toEqual(deposits);
     });
     it('Get account withdrawals', function() {
-      expect(bank.movements.getWithdrawals()).toEqual([['14-01-2012',-500,2500]]);
+      bank.makeDeposit(1000,'10-01-2012');
+      bank.makeDeposit(2000, '13-01-2012');
+      bank.withdrawalMoney(500,'14-01-2012'); 
+      expect(bank.movements.getWithdrawals()).toEqual(withdrawals);
     });    
   });
 
-  describe('Statement printing', function() {
+  /*describe('Statement printing', function() {
     it('Print latest movement', function() {
       expect(bank.printLastMovement()).toEqual("14/01/2012 || || 500.00 || 2500.00");      
     });    
-  });
+  });*/
 });
 
 /*
