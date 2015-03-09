@@ -54,3 +54,7 @@ function MovementList(){
         });
     }
 }
+
+function Date(){
+    this.now = function(){}
+}

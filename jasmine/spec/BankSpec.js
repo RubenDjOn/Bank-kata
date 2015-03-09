@@ -9,17 +9,21 @@ describe("Bank", function() {
     allMovements = [movement1, movement2, movement3];
     deposits = [movement1, movement2];
     withdrawals = [movement3];
+    date = new Date();    
   });
 
   describe('Client make a deposit', function() {
     it('Given a client makes a deposit of 1000 on 10-01-2012', function() {      
-      bank.makeDeposit(1000,'10-01-2012');
+      spyOn(date, 'now').and.returnValue('10-01-2012');
+      bank.makeDeposit(1000, date.now());
       expect(bank.balance).toEqual(1000);
       expect(bank.movements.lastMovement()).toEqual(movement1);
     });
     it('And a deposit of 2000 on 13-01-2012', function() {
-      bank.makeDeposit(1000,'10-01-2012');
-      bank.makeDeposit(2000, '13-01-2012');
+      var spy = spyOn(date, 'now').and.returnValue('10-01-2012');
+      bank.makeDeposit(1000, date.now());
+      spy.and.returnValue('13-01-2012');
+      bank.makeDeposit(2000, date.now());
       expect(bank.balance).toEqual(3000);
       expect(bank.movements.lastMovement()).toEqual(movement2);
     });
@@ -27,8 +31,11 @@ describe("Bank", function() {
 
   describe('Client Withdrawal Money', function() {
     it('And a withdrawal of 500 on 14-01-2012', function() {
+      var spy = spyOn(date, 'now').and.returnValue('10-01-2012');
       bank.makeDeposit(1000,'10-01-2012');
+      spy.and.returnValue('13-01-2012');
       bank.makeDeposit(2000, '13-01-2012');
+      spy.and.returnValue('14-01-2012');
       bank.withdrawalMoney(500,'14-01-2012');  
       expect(bank.balance).toEqual(2500);
       expect(bank.movements.lastMovement()).toEqual(movement3);
@@ -37,21 +44,30 @@ describe("Bank", function() {
 
   describe('Get Acount movements', function() {
     it('Get all bank account movements', function() {
+      var spy = spyOn(date, 'now').and.returnValue('10-01-2012');
       bank.makeDeposit(1000,'10-01-2012');
+      spy.and.returnValue('13-01-2012');
       bank.makeDeposit(2000, '13-01-2012');
-      bank.withdrawalMoney(500,'14-01-2012'); 
+      spy.and.returnValue('14-01-2012');
+      bank.withdrawalMoney(500,'14-01-2012');  
       expect(bank.movements.items).toEqual(allMovements);
     });
     it('Get account deposits', function() {
+      var spy = spyOn(date, 'now').and.returnValue('10-01-2012');
       bank.makeDeposit(1000,'10-01-2012');
+      spy.and.returnValue('13-01-2012');
       bank.makeDeposit(2000, '13-01-2012');
-      bank.withdrawalMoney(500,'14-01-2012'); 
+      spy.and.returnValue('14-01-2012');
+      bank.withdrawalMoney(500,'14-01-2012');  
       expect(bank.movements.getDeposits()).toEqual(deposits);
     });
     it('Get account withdrawals', function() {
+      var spy = spyOn(date, 'now').and.returnValue('10-01-2012');
       bank.makeDeposit(1000,'10-01-2012');
+      spy.and.returnValue('13-01-2012');
       bank.makeDeposit(2000, '13-01-2012');
-      bank.withdrawalMoney(500,'14-01-2012'); 
+      spy.and.returnValue('14-01-2012');
+      bank.withdrawalMoney(500,'14-01-2012');  
       expect(bank.movements.getWithdrawals()).toEqual(withdrawals);
     });    
   });
