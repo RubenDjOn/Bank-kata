@@ -21,9 +21,18 @@ function Movement(date, amount, balance){
     this.amount = amount;
     this.balance = balance;
 
+    this.getType = function(){
+        return this.amount > 0 ? 'credit' : 'debit';
+    }
     this.toArray = function(){
         return [this.date, this.amount, this.balance];
     }
+
+    this.toString = function(){
+        var data = [this.getType(), this.date, (Math.abs(this.amount)).toFixed(2), (this.balance).toFixed(2)];
+        return data.toString();
+    }
+
 }
 
 function MovementList(){
@@ -48,6 +57,24 @@ function MovementList(){
             return movement.amount<0;
         });
     }
+
+    this.getByDate = function(date){        
+        return this.items.filter(function(movement){
+            return movement.date == date;
+        });
+    }
+
+    this.printStatement = function(){
+        var movementsToString = this.items.reverse().map(function(movement){
+            return movement.toString();
+        });
+        return movementsToString.join(' | ');
+    }
+
+    this.printMovement = function(movement){        
+        return movement.toString();
+    }
+
 
     this.toArray = function(){
         return this.items.map(function(movement){

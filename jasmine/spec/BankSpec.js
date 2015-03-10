@@ -72,10 +72,36 @@ describe("Bank", function() {
       expect(movements.getWithdrawals()).toEqual(withdrawals);
     });
     it('Get account movements by date 14-01-2012', function() {
+      var spy = spyOn(date, 'now').and.returnValue('10-01-2012');
+      bank.makeDeposit(1000,'10-01-2012');
+      spy.and.returnValue('13-01-2012');
+      bank.makeDeposit(2000, '13-01-2012');
+      spy.and.returnValue('14-01-2012');
+      bank.withdrawalMoney(500,'14-01-2012');
       expect(movements.getByDate('14-01-2012')).toEqual([movement3]);      
     });    
   });
-
+  
+  describe('Print Statements', function() {
+    it('Print last statement', function() {
+      var spy = spyOn(date, 'now').and.returnValue('10-01-2012');
+      bank.makeDeposit(1000,'10-01-2012');
+      spy.and.returnValue('13-01-2012');
+      bank.makeDeposit(2000, '13-01-2012');
+      spy.and.returnValue('14-01-2012');
+      bank.withdrawalMoney(500,'14-01-2012');
+      expect(movements.printMovement(movements.lastMovement())).toEqual('debit,14-01-2012,500.00,2500.00');
+    });
+    it('Print full statement', function() {
+      var spy = spyOn(date, 'now').and.returnValue('10-01-2012');
+      bank.makeDeposit(1000,'10-01-2012');
+      spy.and.returnValue('13-01-2012');
+      bank.makeDeposit(2000, '13-01-2012');
+      spy.and.returnValue('14-01-2012');
+      bank.withdrawalMoney(500,'14-01-2012');
+      expect(movements.printStatement()).toEqual('debit,14-01-2012,500.00,2500.00 | credit,13-01-2012,2000.00,3000.00 | credit,10-01-2012,1000.00,1000.00');
+    });
+  });
   /*describe('Statement printing', function() {
     it('Print latest movement', function() {
       expect(bank.printLastMovement()).toEqual("14/01/2012 || || 500.00 || 2500.00");      
