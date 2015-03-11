@@ -32,7 +32,6 @@ function Movement(date, amount, balance){
         var data = [this.getType(), this.date, (Math.abs(this.amount)).toFixed(2), (this.balance).toFixed(2)];
         return data.toString();
     }
-
 }
 
 function MovementList(){
@@ -64,8 +63,18 @@ function MovementList(){
         });
     }
 
+    this.toArray = function(){
+        return this.items.map(function(movement){
+            return movement.toArray();
+        });
+    }
+}
+
+function Printer(movements){
+    this.movements = movements;
+
     this.printStatement = function(){
-        var movementsToString = this.items.reverse().map(function(movement){
+        var movementsToString = this.movements.reverse().map(function(movement){
             return movement.toString();
         });
         return movementsToString.join(' | ');
@@ -73,13 +82,6 @@ function MovementList(){
 
     this.printMovement = function(movement){        
         return movement.toString();
-    }
-
-
-    this.toArray = function(){
-        return this.items.map(function(movement){
-            return movement.toArray();
-        });
     }
 }
 
